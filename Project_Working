@@ -1,0 +1,182 @@
+1️⃣ Project Overview
+
+Seat Booking System is a full-stack web application that allows students to book seats based on batch-wise scheduling rules.
+
+The system ensures:
+
+Controlled seat allocation
+
+Batch-wise access
+
+Time-based restrictions (3 PM rule)
+
+Leave and cancellation support
+
+2️⃣ Tech Stack
+Frontend
+
+React.js
+
+Axios (API calls)
+
+LocalStorage (user session)
+
+CSS (custom styling)
+
+Backend
+
+Spring Boot
+
+Spring Data JPA
+
+Hibernate
+
+REST APIs
+
+Maven
+
+Database
+
+MySQL
+
+3️⃣ Database Structure
+User Table
+Field	Type
+id	bigint (PK)
+email	varchar
+batch	varchar
+Booking Table
+Field	Type
+id	bigint (PK)
+date	date
+seat_number	int
+type	varchar (REGULAR / FLOAT)
+is_leave	boolean
+user_id	FK
+4️⃣ Application Flow
+🔹 Step 1: Login
+
+User enters:
+
+Email
+
+Batch (1 or 2)
+
+Backend checks:
+
+If user exists → return user
+
+Else → create new user
+
+User data stored in:
+
+localStorage.setItem("user", JSON.stringify(user));
+🔹 Step 2: Dashboard Load
+
+React reads user from localStorage
+
+Calls API:
+
+GET /api/bookings/user/{userId}
+
+Loads:
+
+Seat grid
+
+My Bookings table
+
+🔹 Step 3: Seat Booking Logic
+🟢 REGULAR Seats (1–40)
+
+Allowed only on user's scheduled day
+
+🟡 FLOAT Seats (41–50)
+
+Only allowed if:
+
+It is NOT the user's batch day
+
+AND current time is after 3:00 PM
+
+Example Logic:
+
+If Batch 1 day:
+
+Seats 1–40 allowed
+
+Seats 41–50 ❌ not allowed
+
+If not Batch 1 day:
+
+Seats 1–40 ❌ not allowed
+
+Seats 41–50 allowed only after 3 PM
+
+🔹 Step 4: Booking API Call
+
+Frontend sends:
+
+POST /api/bookings
+{
+  "seatNumber": 12,
+  "date": "2026-03-08",
+  "type": "REGULAR",
+  "isLeave": false,
+  "user": { "id": 1 }
+}
+
+Backend:
+
+Saves booking
+
+Maps user via foreign key
+
+Stores in MySQL
+
+🔹 Step 5: Leave & Cancel
+Leave
+PUT /api/bookings/{id}/leave
+
+→ Sets is_leave = true
+
+Cancel
+DELETE /api/bookings/{id}
+
+→ Deletes booking record
+
+5️⃣ Security & Control Features
+
+✅ Batch-wise seat control
+✅ Time-based restriction (3 PM rule)
+✅ Prevents invalid seat selection (frontend restriction)
+✅ Relational mapping (User ↔ Booking)
+✅ REST-based architecture
+
+6️⃣ Architecture Overview
+
+Frontend (React)
+↓ Axios
+Spring Boot REST API
+↓
+Service Layer
+↓
+JPA Repository
+↓
+MySQL Database
+
+7️⃣ Key Features
+
+✔ Batch-based booking
+✔ Float seat control
+✔ Dynamic booking table
+✔ Leave marking system
+✔ Clean layered architecture
+
+8️⃣ How to Run
+Backend
+cd backend
+./mvnw spring-boot:run
+Frontend
+cd frontend
+npm install
+npm start
